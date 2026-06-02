@@ -85,28 +85,26 @@ export default function ProjectDetail({ project, groups, onBack }: Props) {
           return (
             <div key={group.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className={`h-1 ${BAR_COLORS[idx % BAR_COLORS.length]}`} />
-              <div className="px-5 py-4">
+              <div className="px-4 py-3">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl">{group.icon}</span>
-                  <span className="font-semibold text-gray-800 flex-1">{group.name}</span>
-                  <span className="text-sm text-gray-400">{pct}%</span>
-                  <span className="font-bold text-gray-800">{formatCurrency(groupTotal)}</span>
+                  <span className="font-semibold text-gray-800 flex-1 text-sm">{group.name}</span>
+                  <span className="text-xs text-gray-400">{pct}%</span>
+                  <span className="font-bold text-gray-800 text-sm">{formatCurrency(groupTotal)}</span>
                 </div>
-                <table className="w-full text-sm">
-                  <tbody className="divide-y divide-gray-50">
-                    {group.items.map(item => (
-                      <tr key={item.id}>
-                        <td className="py-1.5 text-gray-700">{item.name}</td>
-                        <td className="py-1.5 text-right text-gray-400">
-                          {formatCurrency(item.unitPrice)} × {item.quantity}{item.unit}
-                        </td>
-                        <td className="py-1.5 text-right font-medium text-gray-700 pl-3">
-                          {formatCurrency(item.unitPrice * item.quantity)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="space-y-1.5">
+                  {group.items.map(item => (
+                    <div key={item.id} className="flex items-baseline gap-2">
+                      <span className="flex-1 text-sm text-gray-700">{item.name}</span>
+                      <span className="text-xs text-gray-400 shrink-0">
+                        {formatCurrency(item.unitPrice)}×{item.quantity}{item.unit}
+                      </span>
+                      <span className="text-sm font-medium text-gray-700 shrink-0 w-20 text-right">
+                        {formatCurrency(item.unitPrice * item.quantity)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )

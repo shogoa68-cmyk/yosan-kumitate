@@ -4,25 +4,34 @@ export interface BudgetItem {
   unitPrice: number
   quantity: number
   unit: string
-  note: string
+  memo: string
 }
 
-export interface BudgetModule {
+export interface BudgetGroup {
   id: string
   name: string
-  category: string
+  icon: string
   items: BudgetItem[]
   createdAt: string
   updatedAt: string
 }
 
-export interface AssembledBudget {
+export interface Project {
   id: string
   name: string
   description: string
-  moduleIds: string[]
+  groupIds: string[]
   createdAt: string
   updatedAt: string
 }
 
-export type Page = 'modules' | 'assemble' | 'budgets' | 'budget-detail'
+export interface Template {
+  name: string
+  icon: string
+  description: string
+  groups: Array<{
+    name: string
+    icon: string
+    items: Array<{ name: string; unitPrice: number; quantity: number; unit: string }>
+  }>
+}

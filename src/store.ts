@@ -1,64 +1,62 @@
-import { BudgetModule, AssembledBudget } from './types'
+import { BudgetGroup, Project } from './types'
 
-const MODULES_KEY = 'budget_modules'
-const BUDGETS_KEY = 'assembled_budgets'
+const GROUPS_KEY = 'budget_groups'
+const PROJECTS_KEY = 'budget_projects'
 
-export function getModules(): BudgetModule[] {
+export function getGroups(): BudgetGroup[] {
   try {
-    return JSON.parse(localStorage.getItem(MODULES_KEY) || '[]')
+    return JSON.parse(localStorage.getItem(GROUPS_KEY) || '[]')
   } catch {
     return []
   }
 }
 
-export function saveModule(module: BudgetModule): void {
-  const modules = getModules()
-  const idx = modules.findIndex(m => m.id === module.id)
+export function saveGroup(group: BudgetGroup): void {
+  const groups = getGroups()
+  const idx = groups.findIndex(g => g.id === group.id)
   if (idx >= 0) {
-    modules[idx] = module
+    groups[idx] = group
   } else {
-    modules.push(module)
+    groups.push(group)
   }
-  localStorage.setItem(MODULES_KEY, JSON.stringify(modules))
+  localStorage.setItem(GROUPS_KEY, JSON.stringify(groups))
 }
 
-export function deleteModule(id: string): void {
-  const modules = getModules().filter(m => m.id !== id)
-  localStorage.setItem(MODULES_KEY, JSON.stringify(modules))
+export function deleteGroup(id: string): void {
+  localStorage.setItem(GROUPS_KEY, JSON.stringify(getGroups().filter(g => g.id !== id)))
 }
 
-export function getBudgets(): AssembledBudget[] {
+export function getProjects(): Project[] {
   try {
-    return JSON.parse(localStorage.getItem(BUDGETS_KEY) || '[]')
+    return JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]')
   } catch {
     return []
   }
 }
 
-export function saveBudget(budget: AssembledBudget): void {
-  const budgets = getBudgets()
-  const idx = budgets.findIndex(b => b.id === budget.id)
+export function saveProject(project: Project): void {
+  const projects = getProjects()
+  const idx = projects.findIndex(p => p.id === project.id)
   if (idx >= 0) {
-    budgets[idx] = budget
+    projects[idx] = project
   } else {
-    budgets.push(budget)
+    projects.push(project)
   }
-  localStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
+  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects))
 }
 
-export function deleteBudget(id: string): void {
-  const budgets = getBudgets().filter(b => b.id !== id)
-  localStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
+export function deleteProject(id: string): void {
+  localStorage.setItem(PROJECTS_KEY, JSON.stringify(getProjects().filter(p => p.id !== id)))
 }
 
-export function calcModuleTotal(module: BudgetModule): number {
-  return module.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
+export function calcGroupTotal(group: BudgetGroup): number {
+  return group.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
 }
 
-export function calcBudgetTotal(budget: AssembledBudget, modules: BudgetModule[]): number {
-  return budget.moduleIds.reduce((sum, mid) => {
-    const m = modules.find(m => m.id === mid)
-    return sum + (m ? calcModuleTotal(m) : 0)
+export function calcProjectTotal(project: Project, groups: BudgetGroup[]): number {
+  return project.groupIds.reduce((sum, gid) => {
+    const g = groups.find(g => g.id === gid)
+    return sum + (g ? calcGroupTotal(g) : 0)
   }, 0)
 }
 

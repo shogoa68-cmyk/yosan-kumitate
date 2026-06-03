@@ -62,8 +62,13 @@ export default function ProjectBuilder({ groups, onSave, onGroupsChange }: Props
     const lim = limitInput ? Math.max(0, Number(limitInput)) : 0
     const over = lim > 0 && t > lim
     if (over && !prevOver.current) {
-      setShake(true)
-      const id = setTimeout(() => setShake(false), 580)
+      // Force a DOM repaint between class removal and re-addition
+      // by using requestAnimationFrame before setShake(true)
+      setShake(false)
+      const id = setTimeout(() => {
+        setShake(true)
+        setTimeout(() => setShake(false), 620)
+      }, 20)
       prevOver.current = over
       return () => clearTimeout(id)
     }
@@ -408,29 +413,6 @@ export default function ProjectBuilder({ groups, onSave, onGroupsChange }: Props
         </div>
       </div>
 
-      <style>{`
-        @keyframes blkDrop {
-          0%   { transform: translateY(-340px) scale(1.05); opacity: 0; }
-          55%  { transform: translateY(0) scale(1); opacity: 1; }
-          70%  { transform: translateY(-14px) scale(1.02, 0.98); }
-          84%  { transform: translateY(0) scaleY(0.94); }
-          92%  { transform: translateY(-5px) scaleY(1.01); }
-          100% { transform: translateY(0) scale(1); }
-        }
-        .blk-drop { animation: blkDrop .54s cubic-bezier(.5,.05,.3,1) both; transform-origin: center bottom; }
-        @keyframes crateShake {
-          0%,100% { transform: translateX(0) rotate(0); }
-          15% { transform: translateX(-7px) rotate(-0.7deg); }
-          30% { transform: translateX(6px) rotate(0.6deg); }
-          45% { transform: translateX(-5px) rotate(-0.5deg); }
-          60% { transform: translateX(4px) rotate(0.4deg); }
-          75% { transform: translateX(-2px) rotate(-0.2deg); }
-        }
-        .crate-shake { animation: crateShake .58s ease-in-out both; }
-        @media (prefers-reduced-motion: reduce) {
-          .blk-drop, .crate-shake { animation: none !important; }
-        }
-      `}</style>
     </div>
   )
 }
